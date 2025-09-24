@@ -1,4 +1,4 @@
-import { getDocs, getDoc, doc, addDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { getDocs, getDoc, doc, addDoc, deleteDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 import { query, collection, orderBy, limit } from "firebase/firestore";
 
@@ -33,21 +33,31 @@ export const createDiscussion = async (discussion: any): Promise<string | null> 
     }
 }
 
-export const getComments = async (discussionId: string) => {
-    const querySnapshot = await getDocs(query(collection(db, "discussion", discussionId, "comment")));
-    const comments: any[] = [];
-    querySnapshot.forEach((doc) => {
+
+export const getComments = (discussionId: string, callback: (comments: any[]) => void) => {
+    const q = query(
+      collection(db, "discussion", discussionId, "comment"),
+      orderBy("createdAt", "asc")
+    );
+  
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const comments: any[] = [];
+      querySnapshot.forEach((doc) => {
         comments.push({ id: doc.id, ...doc.data() });
+      });
+      callback(comments); // 새로운 댓글 배열 전달
     });
-    console.log(querySnapshot);
-    return comments;
-}
+  
+    return unsubscribe; // 나중에 구독 해제 가능
+  };
 
 export const createComment = async (comment: any) => {
     try {
         const docRef = await addDoc(collection(db, "discussion", comment.discussionId, "comment"), comment);
+        return docRef.id;
     } catch (error) {
         console.error("Error writing document: ", error);
+        return null;
     }
 }
 

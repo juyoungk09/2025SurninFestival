@@ -33,10 +33,6 @@ export default function Home() {
             <h2 className="text-white font-semibold mb-2">토론</h2>
             <p className="text-white/70 text-sm">{discussionsCount}개</p>
           </div>
-          <div className="bg-white/5 rounded-xl p-4">
-            <h2 className="text-white font-semibold mb-2">토론</h2>
-            <p className="text-white/70 text-sm">{  guestbooksCount}개</p>
-          </div>
         </div>
       </div>
       <div className="px-4 sm:px-6 py-8">
