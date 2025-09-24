@@ -35,7 +35,7 @@ export default function Home() {
           </div>
           <div className="bg-white/5 rounded-xl p-4">
             <h2 className="text-white font-semibold mb-2">토론</h2>
-            <p className="text-white/70 text-sm">{guestbooksCount}개</p>
+            <p className="text-white/70 text-sm">{  guestbooksCount}개</p>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function Home() {
           <div key={guestbook.id} className="bg-white/5 gap-2 flex flex-col rounded-xl p-4">
             <h1 className="text-white font-semibold mb-2">{guestbook.username}</h1>
             <p className="text-white/70 text-sm">{guestbook.message}</p>
-            <p className="text-white/70 text-sm">{guestbook.createdAt}</p>
+            <p className="text-white/70 text-sm">{guestbook.createdAt.toDate().toLocaleString()}</p>
           </div>
         ))}
         </div>

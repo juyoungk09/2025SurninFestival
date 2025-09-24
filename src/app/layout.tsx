@@ -6,7 +6,8 @@ import { Header } from "../components/Header";
 import { auth } from "../lib/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { handleUser } from "../lib/auth";
+import { handleUser, signInWithGoogle } from "../lib/auth";
+import { UserContext } from "../lib/context";
 
 export default function RootLayout({
   children,
@@ -16,18 +17,22 @@ export default function RootLayout({
     const [user, setUser] = useState<User | null>(null);
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if(!user){
+            
+            signInWithGoogle();
+          }
           setUser(user);
-          handleUser(user);
+          if(user){
+            handleUser(user);
+          }
         });
         return () => unsubscribe();
       }, []);
   return (
     <html lang="en">
-      <body
-        className="antialiased bg-neutral-950 text-neutral-100 box-border min-h-screen"
-      >
+      <body className="antialiased bg-neutral-950 text-neutral-100 box-border min-h-screen">
         <Header user={user}/>
-        {children}
+        <UserContext.Provider value={user}>{children}</UserContext.Provider>
       </body>
     </html>
   );
