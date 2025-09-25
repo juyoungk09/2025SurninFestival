@@ -126,7 +126,7 @@ export default function SunrinFestival2() {
                                 <div className="border-2 p-2 border-white/10 space-y-3">
                                     {guestbooks.map((g: any, idx: number) => (
                                         <div key={g.id} className={`flex ${idx % 2 === 0 ? "justify-start" : "justify-end"}`}>
-                                            <div className={`max-w-[80%] flex items-end gap-2 ${idx % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}>
+                                            <div className={`max-w-[80%] flex items-center gap-2 ${idx % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}>
                                                 <Image src={g.authorPhoto || "/guest.png"} alt={g.username || "익명"} width={28} height={28} className="rounded-full" />
                                                 <div className="min-w-0">
                                                     {idx % 2 === 0 && (
