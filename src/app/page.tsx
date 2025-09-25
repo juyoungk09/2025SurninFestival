@@ -56,7 +56,7 @@ export default function Home() {
 
             <div className="mt-3 flex items-center justify-between text-xs text-white/50">
               <div className="flex items-center gap-2">
-                <Image src={discussion.authorPhoto || ""} alt={discussion.authorName || "익명"} width={32} height={32} className="rounded-full" />
+                <Image src={discussion.authorPhoto || "/guest.png"} alt={discussion.authorName || "익명"} width={32} height={32} className="rounded-full" />
                 <span className="font-medium text-white/70">{discussion.authorName || "익명"}</span>
               </div>
               <time className="tabular-nums">

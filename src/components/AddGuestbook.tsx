@@ -17,11 +17,10 @@ export default function AddGuestbook( {onClose}: {onClose: () => void}) {
         data.username = user?.displayName || "익명";
         data.authorPhoto = user?.photoURL || "";
         createGuestbook(data);
-        router.push("/guestbook");
         onClose();
     }
     return (
-        <div className={`bg-white/5 p-5 rounded-lg border border-white/5 transition-all duration-500 will-change-transform translate-y-0 hover:scale-[1.01]`}>  
+        <div className={`bg-gray-900 p-5 rounded-lg border border-white/5 transition-all duration-500 will-change-transform translate-y-0 hover:scale-[1.01]`}>  
         <form onSubmit={handleSubmit(onSubmitForm)}>
            <h2 className="text-xl font-bold mb-4">방명록 작성</h2>
             <div  className="mt-6 flex flex-col gap-2 rounded-xl bg-black p-4">

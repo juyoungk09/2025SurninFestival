@@ -80,7 +80,7 @@ export default function GetRandomGuestbook() {
   }
 
   return (
-    <div className={`p-6 bg-white/5 rounded-xl border border-white/10 transition-all duration-500 ${shadowClass} hover:shadow-[0_12px_40px_-10px_rgba(56,189,248,0.5)]`}>
+    <div className={`p-6 bg-gray-900 rounded-xl border border-white/10 transition-all duration-500 ${shadowClass} hover:shadow-[0_12px_40px_-10px_rgba(56,189,248,0.5)]`}>
       <h2 className="text-xl font-bold mb-4">랜덤 방명록</h2>
 
       {!guestbook ? (

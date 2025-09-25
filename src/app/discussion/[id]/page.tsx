@@ -1,7 +1,7 @@
 "use client";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { getDiscussionById, getComments, deleteDiscussion, createComment } from "../../../lib/discussion";
+import { getDiscussionById, getComments, deleteDiscussion, createComment, deleteComment } from "../../../lib/discussion";
 import Image from "next/image";
 import { useUser } from "../../../lib/context";
 export default function DiscussionDetailPage() {
@@ -11,16 +11,28 @@ export default function DiscussionDetailPage() {
     const [message, setMessage] = useState("");
     const [sending, setSending] = useState(false);
     const endRef = useRef<HTMLDivElement | null>(null);
+    const shouldAutoScrollRef = useRef(false);
     const user = useUser();
+    const onDeleteComment = async (commentId: string) => {
+        if (!id) return;
+        const ok = confirm("이 댓글을 삭제할까요?");
+        if (!ok) return;
+        await deleteComment(String(id), commentId);
+        // Realtime listener will update the list automatically
+    };
     useEffect(() => {
         if (!id) return;
         getDiscussionById(id as string).then((discussion) => { setDiscussion(discussion), console.log(discussion) });
         getComments(id as string, (comments) => { setComments(comments), console.log(comments) });
     }, [id]);
 
-    useEffect(() => {
-        endRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [comments]);
+    // useEffect(() => {
+    //     // Only scroll when we explicitly requested it (e.g., after sending)
+    //     if (shouldAutoScrollRef.current) {
+    //         endRef.current?.scrollIntoView({ behavior: "smooth" });
+    //         shouldAutoScrollRef.current = false;
+    //     }
+    // }, [comments]);
 
     const onSend = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,12 +43,15 @@ export default function DiscussionDetailPage() {
                 discussionId: String(id),
                 userId: user?.uid || "",
                 username: user?.displayName || "익명",
-                authorPhoto: user?.photoURL || "",
+                authorPhoto: user?.photoURL || "/guest.png",
                 message: message.trim(),
                 createdAt: new Date(),
             };
             await createComment(payload);
+            endRef.current?.scrollIntoView({ behavior: "smooth" });
             setMessage("");
+            // Request auto-scroll on the next comments update from realtime listener
+            shouldAutoScrollRef.current = true;
             // const refreshed = await getComments(String(id), (comments) => { setComments(comments), console.log(comments) });
             // setComments(refreshed);
         } catch (err) {
@@ -66,15 +81,16 @@ export default function DiscussionDetailPage() {
                     </div>
                     <div className="mt-6">
                         <h2 className="text-3xl max-h-[100px] md:text-4xl font-extrabold tracking-tight">Comments</h2>
-                        <div className="mt-6 max-h-[calc(100vh-200px)] overflow-y-auto webkit-scrollbar scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 space-y-3">
+                        <div className="mt-6 max-h-[calc(100vh-200px)] border-2 p-2 border-white/10 overflow-y-auto webkit-scrollbar scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 space-y-3">
                             {comments.map((comment: any) => {
                                 const isMine = (user?.uid && comment.userId === user.uid) || (user?.displayName && comment.username === user.displayName);
+                                const canDelete = (user?.uid && (comment.userId === user.uid || discussion?.authorId === user.uid || user?.uid === "juyoungk09@gmail.com"));
                                 const timeStr = comment.createdAt ? (comment.createdAt.toDate ? comment.createdAt.toDate().toLocaleString() : new Date(comment.createdAt).toLocaleString()) : "";
                                 return (
                                     <div key={comment.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
-                                        <div className={`max-w-[75%] flex items-end gap-2 ${isMine ? "flex-row-reverse" : "flex-row"}`}>
+                                        <div className={`max-w-[75%] flex items-center gap-2 ${isMine ? "flex-row-reverse" : "flex-row"}`}>
                                             <Image
-                                                src={comment.authorPhoto || "/avatar.png"}
+                                                src={comment.authorPhoto || "/guest.png"}
                                                 alt={comment.username || "익명"}
                                                 width={32}
                                                 height={32}
@@ -95,6 +111,16 @@ export default function DiscussionDetailPage() {
                                                     {timeStr}
                                                 </div>
                                             </div>
+                                            {canDelete && (
+                                                <button
+                                                    onClick={() => onDeleteComment(comment.id)}
+                                                    className="shrink-0 ml-1 rounded-md px-2 py-1 text-xs border border-red-500/30 text-red-300 hover:bg-red-500/10"
+                                                    aria-label="댓글 삭제"
+                                                    title="삭제"
+                                                >
+                                                    삭제
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 );
@@ -102,9 +128,9 @@ export default function DiscussionDetailPage() {
                             <div ref={endRef} />
                         </div>
                         {/* Chat input */}
-                        <form onSubmit={onSend} className="mt-4 sticky bottom-0 flex items-center gap-2 bg-transparent">
+                        <form onSubmit={onSend} className="mt-4 sticky bottom-0 flex items-center gap-2 bg-black border-t border-white/10 rounded-xl p-4">
                             <Image
-                                src={user?.photoURL || "/avatar.png"}
+                                src={user?.photoURL || "/guest.png"}
                                 alt={user?.displayName || "익명"}
                                 width={32}
                                 height={32}
