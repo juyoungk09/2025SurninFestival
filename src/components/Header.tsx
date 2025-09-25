@@ -23,8 +23,8 @@ export const Header = ({user}: {user: User | null}) => {
 
           <nav className="hidden sm:flex items-center gap-1 text-sm">
             <Link href="/" className="px-3 py-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition">Home</Link>
-            <Link href="/sunrinf1" className="px-3 py-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition">Sunrin Festival 1</Link>
-            <Link href="/sunrinf2" className="px-3 py-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition">Sunrin Festival 2</Link>
+            <Link href="/sunrinf1" className="px-3 py-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition">Discussion</Link>
+            <Link href="/sunrinf2" className="px-3 py-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition">Guestbook</Link>
           </nav>
 
           <div className="flex items-center gap-2">
