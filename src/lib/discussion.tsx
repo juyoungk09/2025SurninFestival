@@ -61,6 +61,17 @@ export const createComment = async (comment: any) => {
     }
 }
 
+export const deleteComment = async (discussionId: string, commentId: string) => {
+    try {
+        const target = doc(db, "discussion", discussionId, "comment", commentId);
+        await deleteDoc(target);
+        return true;
+    } catch (error) {
+        console.error("Error deleting comment: ", error);
+        return false;
+    }
+}
+
 export const updateDiscussion = async (id: string, discussion: any) => {
     try {
         const docRef = doc(db, "discussion", id);
